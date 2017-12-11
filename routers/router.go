@@ -34,4 +34,6 @@ func init() {
 	//session部分
 	beego.Router("/Home/Login", &controllers.LoginController{})
 	beego.Router("/Home/Logout", &controllers.LogoutController{})
+	//布局页面部分
+	beego.Router("/Home/Layout", &controllers.LayoutController{})
 }
