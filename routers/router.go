@@ -1,7 +1,7 @@
 package routers
 
 import (
-	"secondweb/controllers"
+	"BeegoLearn/controllers"
 	"github.com/astaxie/beego"
 )
 

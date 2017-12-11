@@ -1,7 +1,7 @@
 package controllers
 
 import (
-	"secondweb/models"
+	"BeegoLearn/models"
 	"fmt"
 	"github.com/astaxie/beego"
 )

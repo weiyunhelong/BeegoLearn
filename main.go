@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/astaxie/beego/orm"
-	_ "secondweb/routers"
+	_ "BeegoLearn/routers"
 	"github.com/astaxie/beego"
 )
 
