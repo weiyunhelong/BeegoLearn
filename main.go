@@ -4,9 +4,11 @@ import (
 	"fmt"
 	"github.com/astaxie/beego/orm"
 	_ "BeegoLearn/routers"
-	"github.com/astaxie/beego"
+    "github.com/astaxie/beego"
 )
 
+
+//初始化
 func init(){
 	dbhost := beego.AppConfig.String("dbhost")
     dbport := beego.AppConfig.String("dbport")
@@ -22,11 +24,13 @@ func init(){
     //注册数据库连接
     orm.RegisterDataBase("default", "mysql", conn)
 
-    fmt.Printf("数据库连接成功！%s\n", conn)
+    fmt.Printf("数据库连接成功！%s\n", conn)  
 }
+
 func main() {
     o := orm.NewOrm()
     o.Using("default") // 默认使用 default，你可以指定为其他数据库
-    
+    //启用Session
+    beego.BConfig.WebConfig.Session.SessionOn = true
 	beego.Run()
 }
