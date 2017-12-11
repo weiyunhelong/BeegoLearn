@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+ 
+<html>
+      <head>
+        <title>首页 - 用户列表页面</title>
+        <link rel="shortcut icon" href="/static/img/favicon.png" />
+        <style>
+          .am-cf{
+            height: 50px;          
+            margin-top: 30px;
+            line-height: 50px;
+            text-align: center;
+            vertical-align: middle;
+            margin-left: 40%;
+          }
+          .am-fr{
+              float: left;
+              line-height: 50px;
+              text-align: center;
+              vertical-align: middle;
+              height: 50px;
+              margin-top: -15px;
+          }
+          .am-pagination{
+            list-style:none;
+            height: 50px;    
+            line-height: 50px;
+            text-align: center;
+            vertical-align: middle;
+          }
+          .am-pagination li{
+            float:left;
+            margin-left: 10px;
+          }
+          .am-pagination li a{
+            text-decoration:none;
+          }
+          .am-jl{
+              float: left;
+              margin-left: 20px;
+          }
+          .am-active{
+              color: #f00;
+          }
+        </style>
+      </head>
+       
+    <body>
+     
+        <div class="row pull-right" style="margin-bottom: 20px;margin-right: 5px;text-align:right;margin-right: 40px;">
+      
+          <input type="text" placeholder="请输入名称" id="txt_search"/>
+          <button class="" onclick="search()">搜索</button>
+        </div>
+            
+        <table class="table table-striped table-hover table-bordered ">
+          <thead>
+           <th style="text-align: center">ID</th>
+           <th style="text-align: center">名称</th>
+           <th style="text-align: center">昵称</th>
+           <th style="text-align: center">密码</th>
+           <th style="text-align: center">Email</th>
+           <th style="text-align: center">性别</th>
+           <th style="text-align: center">手机号</th>
+         </thead>
+        
+         <tbody id="sortable">
+         </tbody>
+        </table> <!--分页部分-->
+        <div style="margin: 20px 0px 10px 0;">
+         <table style="margin: 0 auto;">
+             <tr>
+                 <td>
+                     <div id="pagination" class="pagination"></div>
+                 </td>
+             </tr>
+         </table>
+        </div>
+        <script type="text/javascript" src="/static/js/jquery-2.1.1.min.js"></script> 
+        <script type="text/javascript" src="/static/js/jquery.paginationNew.js"></script>     
+        <script type="text/javascript">
+            //页面的初始化
+            $(function () {            
+              //分页数据
+              InitData();
+            })
+            function search(){
+                var search = $("#txt_search").val();//名称
+                InitData();
+            }
+            //使用分页插件pagination分页显示1
+        function InitData() {
+            var search = $("#txt_search").val();//名称
+
+            $.ajax({
+                async: false,
+                type: "post",
+                url: "/Home/PageData",
+                data: {
+                    search: search,
+                    pageno:0
+                },
+                success: function (data) {
+                    console.log('首页数据')
+                    console.log(data)      
+                    var Count = data.Count
+                    var PageSize = data.PageSize;
+                    var Page =data.Page;
+                    $("#pagination").pagination(Count, {
+                        callback: pageselectCallback,
+                        num_edge_entries: 1,
+                        prev_text: "上一页",
+                        prev_show_always: true,
+                        next_text: "下一页",
+                        next_show_always: true,
+                        items_per_page: PageSize,
+                        current_page: Page,
+                        link_to: '#__aurl=!/Home/PageData',
+                        num_display_entries: 4
+                    });
+                }
+            });
+        }
+
+        //使用分页插件分页后的回调函数2
+        function pageselectCallback(page_id, jq) {
+            var search = $("#txt_search").val();//名称
+
+            $.ajax({
+                async: false,
+                type: "post",
+                url: "/Home/PageNextData",
+                data: {
+                    search: search,
+                    pageno: (parseInt(page_id) + parseInt(1)),
+                },
+                success: function (data) {
+                    console.log('下一页的数据')
+                    console.log(data)
+                    console.log(data.DataList)
+                    htmlData(data.DataList)
+                }
+            });
+        }
+        function htmlData(data){
+             var html='';
+             for(var i=0;i<data.length;i++){
+                html+='<tr class="sort-item"  id="module_'+data[i].Id+'" value="'+data[i].Id+'">';  
+                html+='   <td style="text-align: center;width: 150px;"><span class="label label-default" >'+data[i].Id+'</span></td>';  
+                html+='   <td style="text-align: center;width: 240px;" ><strong>'+data[i].Name+'</strong></td>';  
+                html+='   <td style="text-align: center;width: 240px;" ><strong>'+data[i].Nickname+'</strong></td>';  
+                html+='   <td style="text-align: center;width: 240px;" ><strong>'+data[i].Pwd+'</strong></td>';  
+                html+='   <td style="text-align: center;width: 240px;" ><strong>'+data[i].Email+'</strong></td>';  
+                html+='   <td style="text-align: center;width: 240px;" ><strong>'+data[i].Sex+'</strong></td>';  
+                html+='   <td style="text-align: center;width: 240px;" ><strong>'+data[i].Phone+'</strong></td>';                     
+                html+='</tr>';  
+             }
+              
+             $("#sortable").html(html);
+        }
+        </script>
+    </body>
+</html>
